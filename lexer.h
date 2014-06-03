@@ -17,17 +17,20 @@
  * |-----------------BYTE1---------------|
  * |is_spec|is_desc|is_oper|nouse|prior*4|
  */
-typedef struct _attri_word_t {
-	short type;
-	char symbol[MAX_ID_LEN];
-} attri_word;
-/*
-char **key_word_table = 
-{"void","int","float","char","short","if","else","while","do","return"};
-*/
+enum type {identifier, keyword, number, string, operator, divider};
+ 
+typedef struct _token_t {
+	int type;
+	union {
+		char symbol;
+		char content[2];
+		void *entry;
+	};
+} token_t;
 
 int get_tokens(char *path);
 static get_a_token(char *readbuf);
+void add_token(char* token_char);
 static int do_alpha(int cur_first_index, char *readbuf);
 static int do_digit(int cur_first_index, char *readbuf);
 static int do_string(int cur_first_index, char *readbuf);
@@ -35,7 +38,9 @@ static int do_char(int cur_first_index, char *readbuf);
 static int is_alpha(char c);
 static int is_digit(char c);
 static int is_blank(char c);
+static int is_keyword(char *c);
 static void set_comment_flag();
 static void clear_comment_flag();
 static void report_error();
+
 #endif

@@ -37,6 +37,7 @@ static int get_a_token(char *readbuf)
 		line_num ++;
 		/* Re-initialize the index for next line */
 		cur_first_index = 0;
+		printf("\n line%3d:", line_num); //TODO: println only in demo
 		return RET_EOL;
 	}
 	first_char = readbuf[cur_first_index];
@@ -82,169 +83,170 @@ static int get_a_token(char *readbuf)
 		cur_first_index = do_char(cur_first_index, readbuf);
 		return RET_OK;
 	} else {
+		/* Yeah, it is nasty! */	
 		switch(first_char) {
 		case '+':
 			if (readbuf[cur_first_index+1] == '+') {		// ++
-				printf("++,");
+				add_token("<++,OP>");
 				cur_first_index += 2;
 			} else if (readbuf[cur_first_index+1] == '=') { // +=
-				printf("+=,");
+				add_token("<+=,OP>");
 				cur_first_index += 2;	
 			} else {										// +
-				printf("+,");
+				add_token("<+,OP>");
 				cur_first_index ++;
 			}
 			break;
 		case '-':
 			if (readbuf[cur_first_index+1] == '-') {		// --
-				printf("--,");
+				add_token("<--,OP>");
 				cur_first_index += 2;
 			} else if (readbuf[cur_first_index+1] == '=') { // -=
-				printf("-=,");
+				add_token("<-=,OP>");
 				cur_first_index += 2;
 			} else if (readbuf[cur_first_index+1] == '>') { // -> 
-				printf("->,");
+				add_token("<->,OP>");
 				cur_first_index += 2;
 			} else {										// -
-				printf("-,");
+				add_token("<-,OP>");
 				cur_first_index ++;
 			}
 			break;
 		case '*':
 			if (readbuf[cur_first_index+1] == '=') {		// *=
-				printf("*=,");
+				add_token("<*=,OP>");
 				cur_first_index += 2;
 			} else {										// *
-				printf("*,");
+				add_token("<*,OP>");
 				cur_first_index ++;
 			}
 			break;
 		case '/':
 			if (readbuf[cur_first_index+1] == '=') {		// /=
-				printf("/=,");
+				add_token("</=,OP>");
 				cur_first_index += 2;
 			} else {										// /
-				printf("/,");
+				add_token("</,OP>");
 				cur_first_index ++;
 			}
 			break;
 		case '%':
 			if (readbuf[cur_first_index+1] == '=') {		// %=
-				printf("%%=,");
+				add_token("<%%=,OP>");
 				cur_first_index += 2;
 			} else {										// %
-				printf("%%,");
+				add_token("<%%,OP>");
 				cur_first_index ++;
 			}
 			break;
 		case '<':
 			if (readbuf[cur_first_index+1] == '=') {		// <=
-				printf("<=,");
+				add_token("<<=,OP>");
 				cur_first_index += 2;
 			} else if (readbuf[cur_first_index+1] == '<') {	// <<
-				printf("<<,");
+				add_token("<<<,OP>");
 				cur_first_index += 2;
 			} else {										// <
-				printf("<,");
+				add_token("<<,OP>");
 				cur_first_index ++;
 			}
 			break;
 		case '=':
 			if (readbuf[cur_first_index+1] == '=') {		// ==
-				printf("==,");
+				add_token("<==,OP>");
 				cur_first_index += 2;
 			} else {										// =
-				printf("=,");
+				add_token("<=,OP>");
 				cur_first_index ++;
 			}
 			break;
 		case '!':
 			if (readbuf[cur_first_index+1] == '=') {		// !=
-				printf("!=,");
+				add_token("<!=,OP>");
 				cur_first_index += 2;
 			} else {										// !
-				printf("!,");
+				add_token("<!,OP>");
 				cur_first_index ++;
 			}
 			break;
 		case '>':
 			if (readbuf[cur_first_index+1] == '=') {		// >=
-				printf(">=,");
+				add_token("<>=,OP>");
 				cur_first_index += 2;
 			} else if (readbuf[cur_first_index+1] == '>') {	// >>
-				printf(">>,");
+				add_token("<>>,OP>");
 				cur_first_index += 2;
 			} else {										// >
-				printf(">,");
+				add_token("<>,OP>");
 				cur_first_index ++;
 			}
 			break;
 		case '~':											// ~
-			printf("~,");
+			add_token("<~,OP>");
 			cur_first_index ++;
 			break;
 		case '(':											// (
-			printf("(,");
+			add_token("<(,OP>");
 			cur_first_index ++;
 			break;
 		case ')':											// )
-			printf("),");
+			add_token("<),OP>");
 			cur_first_index ++;
 			break;
 		case '|':
 			if (readbuf[cur_first_index+1] == '=')	{		// |=
-				printf("|=,");
+				add_token("<|=,OP>");
 				cur_first_index += 2;
 			} else if (readbuf[cur_first_index+1] == '|') {	// ||
-				printf("||,");
+				add_token("<||,OP>");
 				cur_first_index += 2;
 			} else {										// |
-				printf("|,");
+				add_token("<|,OP>");
 				cur_first_index ++;
 			}
 			break;
 		case '&':
 			if (readbuf[cur_first_index+1] == '=')	{		// &=
-				printf("&=,");
+				add_token("<&=,OP>");
 				cur_first_index += 2;
 			} else if (readbuf[cur_first_index+1] == '&') {	// &&
-				printf("&&,");
+				add_token("<&&,OP>");
 				cur_first_index += 2;
 			} else {										// &
-				printf("&,");
+				add_token("<&,OP>");
 				cur_first_index ++;
 			}
 			break;		
 		case ',':
-				printf(",,");
+				add_token("<,,OP>");
 				cur_first_index ++;
 			break;
 		case '#':
-				printf("#,");
+				add_token("<#,SP>");
 				cur_first_index ++;
 			break;
 		case ';':
-				printf(";,");
+				add_token("<;,SEP>");
 				cur_first_index ++;
 			break;
 		case '{':
-				printf("{,");
+				add_token("<{,SEP>");
 				cur_first_index ++;
 			break;
 		case '}':
-				printf("},");
+				add_token("<},SEP>");
 				cur_first_index ++;
 			break;
 		case '[':
-				printf("[,");
+				add_token("<[,OP>");
 				cur_first_index ++;
 			break;
 		case ']':
-				printf("],");
+				add_token("<],OP>");
 				cur_first_index ++;
 			break;
 		case ':':
-				printf(":,");
+				add_token("<:,OP>");
 				cur_first_index ++;
 			break;
 		default:
@@ -262,6 +264,17 @@ static int get_a_token(char *readbuf)
 }
 
 /**
+ * token_char is a string for legal token. In this function
+ * We will turn token_char into struct token_t and add it to
+ * the right token list. 
+ * TODO No I lied, as a simple demo, it only do some prints :P
+ */
+void add_token(char* token_char)
+{
+	printf("%s,", token_char);
+}
+
+/**
  * The return value of do_XXX is the cur_first_index which
  * always points to the char just after the last token.
  */
@@ -270,6 +283,7 @@ static int do_alpha(int cur_first_index, char *readbuf)
 	int cur_index;
 	char cur_char;
 	char token_buf[MAX_ID_LEN];
+	char temp[MAX_ID_LEN+8];  //TODO
 	
 	cur_index = cur_first_index;
 	while(1){
@@ -285,11 +299,20 @@ static int do_alpha(int cur_first_index, char *readbuf)
 	 * readbuf[cur_first_index ... cur_index-1] 
 	 * is what we want
 	 */
-	//TODO classify(id/key) and add to table
 	memset(token_buf, 0, sizeof(token_buf));
 	strncpy(token_buf, &(readbuf[cur_first_index]),
 				cur_index - cur_first_index);
-	printf("%s,", token_buf);
+	if (is_keyword(token_buf)) {
+		temp[0] = '<';
+		strcpy(temp+1, token_buf);
+		strcpy(temp+strlen(token_buf)+1, ",KEY>");
+		add_token(temp);
+	} else {
+		temp[0] = '<';
+		strcpy(temp+1, token_buf);
+		strcpy(temp+strlen(token_buf)+1, ",IDF>");
+		add_token(temp);
+	}
 	return cur_index;
 }
 
@@ -298,6 +321,7 @@ static int do_digit(int cur_first_index, char *readbuf)
 	int cur_index;
 	char cur_char;
 	char token_buf[MAX_ID_LEN];
+	char temp[MAX_ID_LEN+8]; //TODO
 	
 	cur_index = cur_first_index;
 	while(1){
@@ -313,11 +337,13 @@ static int do_digit(int cur_first_index, char *readbuf)
 	 * readbuf[cur_first_index ... cur_index-1] 
 	 * is what we want
 	 */
-	 //TODO add to table
 	memset(token_buf, 0, sizeof(token_buf));
 	strncpy(token_buf, &(readbuf[cur_first_index]), 
 				cur_index - cur_first_index);
-	printf("%s,", token_buf);
+	temp[0] = '<';
+	strcpy(temp+1, token_buf);
+	strcpy(temp+strlen(token_buf)+1, ",NUM>");
+	add_token(temp);
 	return cur_index;
 }
 
@@ -326,20 +352,30 @@ static int do_string(int cur_first_index, char *readbuf)
 	int cur_index;
 	char cur_char;
 	char token_buf[MAX_STRING_LEN];	
-
+	int time_out;
+	char temp[MAX_STRING_LEN+8]; //TODO
+	
+	time_out = MAX_STRING_LEN;
 	cur_index = cur_first_index + 1;
-	while(1) {
+	while(time_out --) {
 		cur_char = readbuf[cur_index];
 		if (cur_char != '"') {
 			cur_index ++;
 			continue;
 		} else
-			break;
+			goto out;
 	}
+	/* We find no end token for the string */
+	report_error();
+	return cur_index+1;
+out:
 	memset(token_buf, 0, sizeof(token_buf));
 	strncpy(token_buf, &(readbuf[cur_first_index+1]), 
 				cur_index-cur_first_index-1);
-	printf("%s,", token_buf);
+	temp[0] = '<';
+	strcpy(temp+1, token_buf);
+	strcpy(temp+strlen(token_buf)+1, ",IDF>");
+	add_token(temp);
 	return cur_index+1;
 }
 
@@ -363,6 +399,23 @@ static int is_digit(char c)
 static int is_blank(char c)
 {
 	return (isblank(c) || (c == '\t'));
+}
+
+#define KEYWORD_TBL_LEN 20
+char keyword_tbl[KEYWORD_TBL_LEN][10] = {
+"if","else","while","do","int","float","double",
+"void","char","short","long","static","extern",
+"struct","enum","switch","case","for","break","return"
+};
+
+static int is_keyword(char *c)
+{
+	int i;
+	
+	for (i=0; i<KEYWORD_TBL_LEN; i++)
+		if (!strcmp(c, keyword_tbl[i]))
+			return 1;
+	return 0;
 }
 
 static void set_comment_flag()
